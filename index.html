@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AlgoVis — Algorithm Visualizer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #080b0f;
+      --surface: #0e1318;
+      --border: #1e2730;
+      --accent: #00e5a0;
+      --accent-dim: #00a872;
+      --text: #e8f0ea;
+      --muted: #5a6e61;
+      --mono: 'JetBrains Mono', monospace;
+      --display: 'Syne', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--display);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* grid overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 48px 48px;
+      opacity: 0.35;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 2.5rem;
+      border-bottom: 1px solid var(--border);
+      background: rgba(8, 11, 15, 0.85);
+      backdrop-filter: blur(12px);
+    }
+
+    .logo {
+      font-family: var(--mono);
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: -0.02em;
+    }
+
+    .logo span { color: var(--muted); }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 2rem;
+    }
+
+    nav a {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    nav a:hover { color: var(--accent); }
+
+    /* HERO */
+    .hero {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 8rem 2.5rem 4rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .hero-label {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: var(--accent);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero h1 {
+      font-size: clamp(3rem, 8vw, 7rem);
+      font-weight: 800;
+      line-height: 0.95;
+      letter-spacing: -0.04em;
+      color: var(--text);
+    }
+
+    .hero h1 em {
+      font-style: normal;
+      color: var(--accent);
+    }
+
+    .hero-sub {
+      margin-top: 2rem;
+      font-family: var(--mono);
+      font-size: 0.9rem;
+      color: var(--muted);
+      max-width: 480px;
+      line-height: 1.8;
+    }
+
+    .hero-cta {
+      margin-top: 3rem;
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 0.8rem 1.8rem;
+      border-radius: 2px;
+      transition: all 0.2s;
+      display: inline-block;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #080b0f;
+      font-weight: 700;
+    }
+
+    .btn-primary:hover { background: #00ffb3; }
+
+    .btn-ghost {
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+
+    .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* stat bar */
+    .hero-stats {
+      margin-top: 5rem;
+      display: flex;
+      gap: 3rem;
+      border-top: 1px solid var(--border);
+      padding-top: 2rem;
+    }
+
+    .stat label {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      color: var(--muted);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 0.3rem;
+    }
+
+    .stat strong {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--text);
+    }
+
+    /* SECTIONS */
+    section {
+      position: relative;
+      z-index: 1;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 5rem 2.5rem;
+    }
+
+    .section-label {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      color: var(--accent);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 3rem;
+      color: var(--text);
+    }
+
+    /* CARDS GRID */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1px;
+      border: 1px solid var(--border);
+    }
+
+    .card {
+      background: var(--surface);
+      padding: 2rem;
+      text-decoration: none;
+      color: inherit;
+      border-right: 1px solid var(--border);
+      transition: background 0.2s;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--accent);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s ease;
+    }
+
+    .card:hover { background: #111820; }
+    .card:hover::after { transform: scaleX(1); }
+
+    .card-icon {
+      width: 40px;
+      height: 40px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--mono);
+      font-size: 1rem;
+    }
+
+    .card h3 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .card p {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--muted);
+      line-height: 1.8;
+      flex: 1;
+    }
+
+    .card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-top: 0.5rem;
+    }
+
+    .tag {
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      padding: 0.25rem 0.6rem;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      border-radius: 2px;
+      letter-spacing: 0.05em;
+    }
+
+    .card-arrow {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--accent);
+      margin-top: 0.5rem;
+      opacity: 0;
+      transform: translateX(-8px);
+      transition: all 0.2s;
+    }
+
+    .card:hover .card-arrow { opacity: 1; transform: translateX(0); }
+
+    /* FOOTER */
+    footer {
+      position: relative;
+      z-index: 1;
+      border-top: 1px solid var(--border);
+      padding: 2rem 2.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    footer p {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: var(--muted);
+    }
+
+    footer a { color: var(--accent); text-decoration: none; }
+
+    /* animated cursor blink */
+    @keyframes blink { 50% { opacity: 0; } }
+    .cursor {
+      display: inline-block;
+      width: 3px;
+      height: 0.85em;
+      background: var(--accent);
+      margin-left: 4px;
+      vertical-align: middle;
+      animation: blink 1s step-end infinite;
+    }
+
+    @media (max-width: 600px) {
+      nav ul { display: none; }
+      .hero-stats { flex-direction: column; gap: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="logo">algo<span>/</span>vis</div>
+    <ul>
+      <li><a href="sorting/index.html">Sorting</a></li>
+      <li><a href="graph/index.html">Graph</a></li>
+      <li><a href="pathfinding/index.html">Pathfinding</a></li>
+      <li><a href="tree/index.html">Trees</a></li>
+    </ul>
+  </nav>
+
+  <div class="hero">
+    <p class="hero-label">// algorithm visualizer</p>
+    <h1>See the<br><em>logic</em><br>run<span class="cursor"></span></h1>
+    <p class="hero-sub">
+      Step through sorting, graphs, pathfinding and tree algorithms frame by frame.
+      Built for people who think in code.
+    </p>
+    <div class="hero-cta">
+      <a class="btn btn-primary" href="sorting/index.html">Start Visualizing</a>
+      <a class="btn btn-ghost" href="https://github.com/Piyushgairola06/algovis" target="_blank">View on GitHub</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><label>Algorithms</label><strong>15+</strong></div>
+      <div class="stat"><label>Categories</label><strong>04</strong></div>
+      <div class="stat"><label>Dependencies</label><strong>0</strong></div>
+    </div>
+  </div>
+
+  <section id="explore">
+    <p class="section-label">// explore</p>
+    <h2 class="section-title">Pick a category</h2>
+    <div class="cards">
+
+      <a class="card" href="sorting/index.html">
+        <div class="card-icon">▦</div>
+        <h3>Sorting</h3>
+        <p>Watch arrays get ordered in real time. Control speed and compare how different strategies attack the same problem.</p>
+        <div class="card-tags">
+          <span class="tag">Bubble</span>
+          <span class="tag">Merge</span>
+          <span class="tag">Quick</span>
+          <span class="tag">Heap</span>
+          <span class="tag">Insertion</span>
+        </div>
+        <div class="card-arrow">→ open</div>
+      </a>
+
+      <a class="card" href="graph/index.html">
+        <div class="card-icon">◎</div>
+        <h3>Graph</h3>
+        <p>Traverse nodes and edges. See BFS expand level by level, DFS dive deep, and Dijkstra greedily build shortest paths.</p>
+        <div class="card-tags">
+          <span class="tag">BFS</span>
+          <span class="tag">DFS</span>
+          <span class="tag">Dijkstra</span>
+        </div>
+        <div class="card-arrow">→ open</div>
+      </a>
+
+      <a class="card" href="pathfinding/index.html">
+        <div class="card-icon">⊹</div>
+        <h3>Pathfinding</h3>
+        <p>Draw walls on a grid, place start and end, then fire off A* and watch the heuristic-guided search carve a path.</p>
+        <div class="card-tags">
+          <span class="tag">A*</span>
+          <span class="tag">Greedy BFS</span>
+          <span class="tag">Dijkstra</span>
+        </div>
+        <div class="card-arrow">→ open</div>
+      </a>
+
+      <a class="card" href="tree/index.html">
+        <div class="card-icon">⌥</div>
+        <h3>Trees</h3>
+        <p>Insert nodes and watch the structure rebalance. Step through in-order, pre-order, and post-order traversals live.</p>
+        <div class="card-tags">
+          <span class="tag">BST</span>
+          <span class="tag">AVL</span>
+          <span class="tag">Traversals</span>
+        </div>
+        <div class="card-arrow">→ open</div>
+      </a>
+
+    </div>
+  </section>
+
+  <footer>
+    <p>AlgoVis — built with zero dependencies</p>
+    <p><a href="https://github.com/Piyushgairola06/algovis" target="_blank">github.com/Piyushgairola06/algovis</a></p>
+  </footer>
+
+</body>
+</html>
