@@ -1,0 +1,40 @@
+body {
+  margin: 0;
+  background: #0d0d0d;
+  color: #e8e8e8;
+  font-family: monospace;
+}
+
+.workspace {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  height: 100vh;
+}
+
+.panel {
+  padding: 1rem;
+  border-right: 1px solid #222;
+}
+
+button {
+  margin: 5px 0;
+  padding: 6px;
+  background: none;
+  border: 1px solid #444;
+  color: #e8e8e8;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #333;
+}
+
+.canvas-wrap {
+  position: relative;
+}
+
+canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
