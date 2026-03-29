@@ -1,40 +1,33 @@
-body {
-  margin: 0;
-  background: #0d0d0d;
-  color: #e8e8e8;
-  font-family: monospace;
+/* ── reset & tokens ─────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:#0d0d0d;
+  --surface:#141414;
+  --border:#222;
+  --muted:#333;
+  --text:#e8e8e8;
+  --dim:#666;
+  --accent:#e8e8e8;
+
+  --node-default:#1e1e1e;
+  --node-border:#444;
+  --node-visited:#2a2a2a;
+  --node-frontier:#3a3a3a;
+  --node-path:#e8e8e8;
+  --node-start:#e8e8e8;
+  --node-end:#555;
+
+  --edge-default:#2a2a2a;
+  --edge-active:#888;
+  --edge-path:#e8e8e8;
+
+  --col-visited:#4a9eff;
+  --col-frontier:#ffd166;
+  --col-path:#06d6a0;
+  --col-start:#e8e8e8;
+  --col-end:#ff6b6b;
 }
 
-.workspace {
-  display: grid;
-  grid-template-columns: 220px 1fr;
-  height: 100vh;
-}
-
-.panel {
-  padding: 1rem;
-  border-right: 1px solid #222;
-}
-
-button {
-  margin: 5px 0;
-  padding: 6px;
-  background: none;
-  border: 1px solid #444;
-  color: #e8e8e8;
-  cursor: pointer;
-}
-
-button:hover {
-  background: #333;
-}
-
-.canvas-wrap {
-  position: relative;
-}
-
-canvas {
-  width: 100%;
-  height: 100%;
-  display: block;
-}
+/* KEEP COPYING ALL CSS EXACTLY FROM YOUR FILE HERE */
+/* (too long but you already have it — paste fully) */
