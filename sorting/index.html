@@ -5,241 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sorting — AlgoVis</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Syne:wght@700;800&display=swap" rel="stylesheet" />
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --bg: #080b0f;
-      --surface: #0e1318;
-      --border: #1e2730;
-      --accent: #00e5a0;
-      --compare: #ff6b35;
-      --swap: #ffcc00;
-      --sorted: #00e5a0;
-      --pivot: #c084fc;
-      --text: #e8f0ea;
-      --muted: #5a6e61;
-      --mono: 'JetBrains Mono', monospace;
-    }
-
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: var(--mono);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-
-    nav {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 1rem 2rem;
-      border-bottom: 1px solid var(--border);
-      background: var(--surface);
-      flex-shrink: 0;
-    }
-    .nav-back { color: var(--muted); text-decoration: none; font-size: 0.75rem; letter-spacing: 0.08em; }
-    .nav-back:hover { color: var(--accent); }
-    .nav-title { font-size: 0.85rem; color: var(--accent); font-weight: 700; }
-
-    .app {
-      display: grid;
-      grid-template-columns: 260px 1fr;
-      flex: 1;
-      min-height: 0;
-    }
-
-    aside {
-      border-right: 1px solid var(--border);
-      padding: 1.5rem;
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-      background: var(--surface);
-      overflow-y: auto;
-    }
-
-    .ctrl-group label {
-      display: block;
-      font-size: 0.62rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 0.6rem;
-    }
-
-    .algo-btns { display: flex; flex-direction: column; gap: 0.4rem; }
-
-    .algo-btn {
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--muted);
-      font-family: var(--mono);
-      font-size: 0.78rem;
-      padding: 0.6rem 0.8rem;
-      text-align: left;
-      cursor: pointer;
-      border-radius: 2px;
-      transition: all 0.15s;
-    }
-    .algo-btn:hover  { border-color: var(--accent); color: var(--text); }
-    .algo-btn.active { border-color: var(--accent); color: var(--accent); background: rgba(0,229,160,0.06); }
-
-    input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; }
-    .range-row { display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--muted); margin-top: 0.3rem; }
-
-    /* custom input */
-    .custom-input-wrap { display: flex; flex-direction: column; gap: 0.5rem; }
-    .custom-input-row  { display: flex; gap: 0.4rem; }
-
-    input[type=text] {
-      flex: 1;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      color: var(--text);
-      font-family: var(--mono);
-      font-size: 0.72rem;
-      padding: 0.5rem 0.6rem;
-      border-radius: 2px;
-      outline: none;
-      transition: border-color 0.15s;
-    }
-    input[type=text]:focus { border-color: var(--accent); }
-    input[type=text].error { border-color: var(--compare) !important; }
-
-    .input-error { font-size: 0.65rem; color: var(--compare); display: none; }
-    .input-error.show { display: block; }
-    .input-hint  { font-size: 0.62rem; color: var(--muted); }
-
-    .btn-apply {
-      background: transparent;
-      border: 1px solid var(--accent);
-      color: var(--accent);
-      font-family: var(--mono);
-      font-size: 0.68rem;
-      padding: 0.5rem 0.7rem;
-      border-radius: 2px;
-      cursor: pointer;
-      transition: all 0.15s;
-      white-space: nowrap;
-    }
-    .btn-apply:hover { background: rgba(0,229,160,0.1); }
-
-    /* presets */
-    .preset-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 0.35rem; }
-    .preset-btn {
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--muted);
-      font-family: var(--mono);
-      font-size: 0.65rem;
-      padding: 0.45rem 0.4rem;
-      cursor: pointer;
-      border-radius: 2px;
-      transition: all 0.15s;
-      text-align: center;
-    }
-    .preset-btn:hover { border-color: var(--accent); color: var(--text); }
-
-    /* run buttons */
-    .run-btns { display: flex; gap: 0.5rem; }
-    .btn {
-      font-family: var(--mono);
-      font-size: 0.72rem;
-      letter-spacing: 0.08em;
-      padding: 0.65rem 1rem;
-      border-radius: 2px;
-      cursor: pointer;
-      border: none;
-      flex: 1;
-      transition: all 0.15s;
-    }
-    .btn-go    { background: var(--accent); color: #080b0f; font-weight: 700; }
-    .btn-go:hover { background: #00ffb3; }
-    .btn-go:disabled { background: var(--border); color: var(--muted); cursor: not-allowed; }
-    .btn-reset { background: transparent; border: 1px solid var(--border); color: var(--muted); }
-    .btn-reset:hover { border-color: var(--compare); color: var(--compare); }
-
-    /* complexity */
-    .complexity { border: 1px solid var(--border); border-radius: 2px; padding: 1rem; display: flex; flex-direction: column; gap: 0.6rem; }
-    .complexity-row { display: flex; justify-content: space-between; font-size: 0.7rem; }
-    .complexity-row span:first-child { color: var(--muted); }
-    .complexity-row span:last-child  { color: var(--text); }
-
-    /* legend */
-    .legend { display: flex; flex-direction: column; gap: 0.5rem; }
-    .legend-item { display: flex; align-items: center; gap: 0.6rem; font-size: 0.7rem; color: var(--muted); }
-    .legend-dot  { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
-
-    /* MAIN */
-    main { display: flex; flex-direction: column; padding: 1.5rem 2rem; gap: 0.85rem; min-width: 0; }
-
-    /* explain box */
-    #explain-box {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-left: 3px solid var(--accent);
-      border-radius: 2px;
-      padding: 0.7rem 1rem;
-      font-size: 0.75rem;
-      color: var(--text);
-      min-height: 38px;
-      line-height: 1.5;
-      transition: border-left-color 0.15s;
-    }
-    #explain-box.comparing { border-left-color: var(--compare); }
-    #explain-box.swapping  { border-left-color: var(--swap); }
-    #explain-box.sorted    { border-left-color: var(--sorted); }
-    #explain-box.pivot     { border-left-color: var(--pivot); }
-
-    .stats-bar { display: flex; gap: 2rem; }
-    .stat { font-size: 0.72rem; }
-    .stat span   { color: var(--muted); }
-    .stat strong { color: var(--accent); margin-left: 0.4rem; }
-
-    #vis-wrapper {
-      flex: 1;
-      border: 1px solid var(--border);
-      border-radius: 2px;
-      background: rgba(14,19,24,0.6);
-      position: relative;
-      min-height: 260px;
-    }
-    #vis { width: 100%; height: 100%; display: block; }
-
-    #log {
-      height: 72px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 2px;
-      padding: 0.75rem 1rem;
-      font-size: 0.72rem;
-      color: var(--muted);
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column-reverse;
-    }
-    .log-entry .ts { color: var(--muted); margin-right: 0.5rem; }
-    .log-entry     { color: var(--text); }
-
-    @media (max-width: 700px) {
-      .app { grid-template-columns: 1fr; }
-      aside { border-right: none; border-bottom: 1px solid var(--border); }
-    }
-  </style>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
 <nav>
   <a class="nav-back" href="../index.html">← back</a>
   <span class="nav-title">// sorting visualizer</span>
-  <span style="font-size:0.7rem;color:var(--muted)">algovis</span>
+  <span class="nav-brand">algovis</span>
 </nav>
 
 <div class="app">
+
+  <!-- ── SIDEBAR ── -->
   <aside>
 
     <div class="ctrl-group">
@@ -295,10 +74,10 @@
     <div class="ctrl-group">
       <label>Complexity</label>
       <div class="complexity">
-        <div class="complexity-row"><span>Best</span><span id="c-best">O(n)</span></div>
-        <div class="complexity-row"><span>Avg</span><span id="c-avg">O(n²)</span></div>
-        <div class="complexity-row"><span>Worst</span><span id="c-worst">O(n²)</span></div>
-        <div class="complexity-row"><span>Space</span><span id="c-space">O(1)</span></div>
+        <div class="complexity-row"><span>Best</span>  <span id="c-best">O(n)</span></div>
+        <div class="complexity-row"><span>Avg</span>   <span id="c-avg">O(n²)</span></div>
+        <div class="complexity-row"><span>Worst</span> <span id="c-worst">O(n²)</span></div>
+        <div class="complexity-row"><span>Space</span> <span id="c-space">O(1)</span></div>
         <div class="complexity-row"><span>Stable</span><span id="c-stable">Yes</span></div>
       </div>
     </div>
@@ -307,492 +86,45 @@
       <label>Legend</label>
       <div class="legend">
         <div class="legend-item"><div class="legend-dot" style="background:#1e3a2a"></div>Unsorted</div>
-        <div class="legend-item"><div class="legend-dot" style="background:var(--compare)"></div>Comparing</div>
-        <div class="legend-item"><div class="legend-dot" style="background:var(--swap)"></div>Swapping</div>
-        <div class="legend-item"><div class="legend-dot" style="background:var(--pivot)"></div>Pivot (Quick Sort)</div>
-        <div class="legend-item"><div class="legend-dot" style="background:var(--sorted)"></div>Sorted</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#ff6b35"></div>Comparing</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#ffcc00"></div>Swapping</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#c084fc"></div>Pivot (Quick Sort)</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#00e5a0"></div>Sorted</div>
       </div>
     </div>
 
   </aside>
 
+  <!-- ── MAIN ── -->
   <main>
+
+    <!-- Step-by-step explanation -->
     <div id="explain-box">Ready — select an algorithm and press ▶ Run</div>
 
+    <!-- Live stats -->
     <div class="stats-bar">
       <div class="stat"><span>Comparisons:</span><strong id="s-comps">0</strong></div>
-      <div class="stat"><span>Swaps:</span><strong id="s-swaps">0</strong></div>
-      <div class="stat"><span>Time:</span><strong id="s-time">0ms</strong></div>
-      <div class="stat"><span>Status:</span><strong id="s-status">Ready</strong></div>
+      <div class="stat"><span>Swaps:</span>      <strong id="s-swaps">0</strong></div>
+      <div class="stat"><span>Time:</span>        <strong id="s-time">0ms</strong></div>
+      <div class="stat"><span>Status:</span>      <strong id="s-status">Ready</strong></div>
     </div>
 
-    <div id="vis-wrapper"><canvas id="vis"></canvas></div>
+    <!-- Canvas -->
+    <div id="vis-wrapper">
+      <canvas id="vis"></canvas>
+    </div>
 
+    <!-- Log -->
     <div id="log">
       <span class="log-entry"><span class="ts">&gt;</span> Ready. Select an algorithm and press Run.</span>
     </div>
+
   </main>
 </div>
 
-<script>
-// ── State ────────────────────────────────────────────────────────────────────
-let arr = [], bars = [], pointers = {};
-let running = false, stopped = false;
-let comps = 0, swaps = 0;
-let algo = 'bubble';
+<!-- algorithms.js must load before visualizer.js -->
+<script src="algorithms.js"></script>
+<script src="visualizer.js"></script>
 
-const COMPLEXITIES = {
-  bubble:    { best:'O(n)',       avg:'O(n²)',       worst:'O(n²)',       space:'O(1)',      stable:'Yes' },
-  selection: { best:'O(n²)',      avg:'O(n²)',        worst:'O(n²)',       space:'O(1)',      stable:'No'  },
-  insertion: { best:'O(n)',       avg:'O(n²)',        worst:'O(n²)',       space:'O(1)',      stable:'Yes' },
-  merge:     { best:'O(n log n)', avg:'O(n log n)',   worst:'O(n log n)', space:'O(n)',      stable:'Yes' },
-  quick:     { best:'O(n log n)', avg:'O(n log n)',   worst:'O(n²)',      space:'O(log n)',  stable:'No'  },
-  heap:      { best:'O(n log n)', avg:'O(n log n)',   worst:'O(n log n)', space:'O(1)',      stable:'No'  },
-};
-
-// ── Canvas ───────────────────────────────────────────────────────────────────
-const canvas  = document.getElementById('vis');
-const ctx     = canvas.getContext('2d');
-const wrapper = document.getElementById('vis-wrapper');
-
-function resizeCanvas() { canvas.width = wrapper.clientWidth; canvas.height = wrapper.clientHeight; draw(); }
-window.addEventListener('resize', resizeCanvas);
-
-const COLOR = { normal:'#1e3a2a', compare:'#ff6b35', swap:'#ffcc00', sorted:'#00e5a0', pivot:'#c084fc' };
-
-// ── Draw ─────────────────────────────────────────────────────────────────────
-function draw() {
-  const W = canvas.width, H = canvas.height;
-  ctx.clearRect(0, 0, W, H);
-  if (!arr.length) return;
-
-  const n          = arr.length;
-  const ARROW_ZONE = 30;
-  const gap        = Math.max(1, Math.floor(W / n * 0.12));
-  const barW       = (W - gap * (n + 1)) / n;
-  const maxVal     = Math.max(...arr);
-  const showVal    = barW >= 14 && n <= 60;
-
-  for (let i = 0; i < n; i++) {
-    const barH = (arr[i] / maxVal) * (H - ARROW_ZONE - 10);
-    const x    = gap + i * (barW + gap);
-    const y    = H - ARROW_ZONE - barH;
-
-    ctx.fillStyle = COLOR[bars[i]] || COLOR.normal;
-    ctx.beginPath();
-    ctx.rect(x, y, barW, barH);
-    ctx.fill();
-
-    // value label on bar top
-    if (showVal) {
-      ctx.fillStyle     = bars[i] === 'sorted' ? '#080b0f' : '#e8f0ea';
-      ctx.font          = `${Math.min(barW * 0.55, 11)}px 'JetBrains Mono', monospace`;
-      ctx.textAlign     = 'center';
-      ctx.textBaseline  = 'bottom';
-      ctx.fillText(arr[i], x + barW / 2, y - 2);
-    }
-  }
-
-  // pointer arrows ▲ below bars
-  for (const [idx, pType] of Object.entries(pointers)) {
-    const i    = parseInt(idx);
-    const x    = gap + i * (barW + gap) + barW / 2;
-    const arrowY = H - ARROW_ZONE + 4;
-    const col  = { compare:'#ff6b35', swap:'#ffcc00', pivot:'#c084fc', sorted:'#00e5a0' }[pType] || '#5a6e61';
-
-    ctx.fillStyle = col;
-    ctx.beginPath();
-    ctx.moveTo(x, arrowY);
-    ctx.lineTo(x - 5, arrowY + 10);
-    ctx.lineTo(x + 5, arrowY + 10);
-    ctx.closePath();
-    ctx.fill();
-
-    if (pType === 'pivot') {
-      ctx.fillStyle    = col;
-      ctx.font         = "8px 'JetBrains Mono', monospace";
-      ctx.textAlign    = 'center';
-      ctx.textBaseline = 'top';
-      ctx.fillText('pivot', x, arrowY + 12);
-    }
-  }
-}
-
-// ── Explain box ───────────────────────────────────────────────────────────────
-const explainBox = document.getElementById('explain-box');
-function explain(msg, type = '') { explainBox.textContent = msg; explainBox.className = type; }
-
-// ── Array generators ──────────────────────────────────────────────────────────
-function makeRandom(n)   { return Array.from({ length: n }, () => Math.floor(Math.random() * 90) + 10); }
-function makeReversed(n) { return Array.from({ length: n }, (_, i) => Math.round(100 - (i / (n - 1)) * 90)); }
-function makeNearly(n) {
-  const a = Array.from({ length: n }, (_, i) => Math.round(10 + (i / (n - 1)) * 90));
-  for (let k = 0; k < Math.floor(n * 0.15); k++) {
-    const i = Math.floor(Math.random() * n), j = Math.floor(Math.random() * n);
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
-function makeFewUnique(n) {
-  const vals = [15, 35, 55, 75, 95];
-  return Array.from({ length: n }, () => vals[Math.floor(Math.random() * vals.length)]);
-}
-
-function applyArray(newArr) {
-  arr = newArr;
-  bars = Array(arr.length).fill('normal');
-  pointers = {};
-  comps = swaps = 0;
-  updateStats();
-  setStatus('Ready');
-  explain('Ready — select an algorithm and press ▶ Run');
-  draw();
-}
-
-function genArray(preset = 'random') {
-  const n   = parseInt(document.getElementById('size').value);
-  const gen = { random: makeRandom, reversed: makeReversed, nearly: makeNearly, few: makeFewUnique };
-  applyArray((gen[preset] || makeRandom)(n));
-  log(`Preset: ${preset} — ${n} elements`);
-}
-
-// ── Custom input ──────────────────────────────────────────────────────────────
-function applyCustomInput() {
-  if (running) return;
-  const raw     = document.getElementById('custom-input').value.trim();
-  const errEl   = document.getElementById('input-error');
-  const inputEl = document.getElementById('custom-input');
-
-  errEl.classList.remove('show');
-  inputEl.classList.remove('error');
-
-  if (!raw) { showErr('Enter some numbers first'); return; }
-
-  const parts = raw.split(',').map(s => s.trim()).filter(Boolean);
-  const nums  = parts.map(Number);
-
-  if (!parts.length || nums.some(v => isNaN(v) || v < 1 || v > 999 || !Number.isInteger(v))) {
-    showErr('Only whole numbers 1–999, comma-separated'); inputEl.classList.add('error'); return;
-  }
-  if (parts.length > 60) { showErr('Max 60 values'); inputEl.classList.add('error'); return; }
-
-  applyArray(nums);
-  log(`Custom input — ${nums.length} elements: ${nums.slice(0, 8).join(', ')}${nums.length > 8 ? '…' : ''}`);
-}
-
-function showErr(msg) {
-  const el = document.getElementById('input-error');
-  el.textContent = msg;
-  el.classList.add('show');
-}
-
-document.getElementById('btn-apply').addEventListener('click', applyCustomInput);
-document.getElementById('custom-input').addEventListener('keydown', e => { if (e.key === 'Enter') applyCustomInput(); });
-
-// ── Presets ───────────────────────────────────────────────────────────────────
-document.querySelectorAll('.preset-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    if (running) return;
-    document.getElementById('custom-input').value = '';
-    document.getElementById('input-error').classList.remove('show');
-    genArray(btn.dataset.preset);
-  });
-});
-
-// ── Helpers ───────────────────────────────────────────────────────────────────
-function sleep(ms)    { return new Promise(r => setTimeout(r, ms)); }
-function getDelay()   { return parseInt(document.getElementById('speed').value); }
-
-async function pause(states, msg = '', type = '') {
-  if (stopped) throw new Error('stopped');
-  pointers = {};
-  for (const [i, s] of states) { bars[i] = s; pointers[i] = s; }
-  if (msg) explain(msg, type);
-  draw();
-  await sleep(getDelay());
-  for (const [i, s] of states) if (s !== 'sorted' && s !== 'pivot') bars[i] = 'normal';
-}
-
-function updateStats() {
-  document.getElementById('s-comps').textContent = comps;
-  document.getElementById('s-swaps').textContent = swaps;
-}
-function setStatus(s) { document.getElementById('s-status').textContent = s; }
-
-let t0;
-function startTimer() { t0 = performance.now(); }
-function stopTimer()  { document.getElementById('s-time').textContent = (performance.now() - t0).toFixed(0) + 'ms'; }
-
-function log(msg) {
-  const el    = document.getElementById('log');
-  const entry = document.createElement('span');
-  entry.className = 'log-entry';
-  entry.innerHTML = `<span class="ts">&gt;</span> ${msg}`;
-  el.prepend(entry);
-}
-
-// ── Sorting algorithms ────────────────────────────────────────────────────────
-
-async function bubbleSort() {
-  const n = arr.length;
-  for (let i = 0; i < n - 1; i++) {
-    for (let j = 0; j < n - i - 1; j++) {
-      comps++;
-      await pause([[j, 'compare'], [j + 1, 'compare']],
-        `Comparing arr[${j}] = ${arr[j]}  vs  arr[${j+1}] = ${arr[j+1]}`, 'comparing');
-      if (arr[j] > arr[j + 1]) {
-        swaps++;
-        await pause([[j, 'swap'], [j + 1, 'swap']],
-          `${arr[j]} > ${arr[j+1]}  →  Swap! Larger value bubbles right`, 'swapping');
-        [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
-      } else {
-        explain(`${arr[j]} ≤ ${arr[j+1]}  →  Already in order, no swap needed`, 'comparing');
-      }
-      updateStats();
-    }
-    bars[n - i - 1] = 'sorted';
-    explain(`Position ${n - i - 1} is locked in its final sorted place ✓`, 'sorted');
-    draw();
-  }
-  bars[0] = 'sorted';
-}
-
-async function selectionSort() {
-  const n = arr.length;
-  for (let i = 0; i < n - 1; i++) {
-    let minIdx = i;
-    explain(`Pass ${i + 1}: scanning indices ${i} → ${n - 1} for the minimum value`, 'comparing');
-    for (let j = i + 1; j < n; j++) {
-      comps++;
-      await pause([[j, 'compare'], [minIdx, 'swap']],
-        `Is arr[${j}] = ${arr[j]}  smaller than current min arr[${minIdx}] = ${arr[minIdx]}?`, 'comparing');
-      if (arr[j] < arr[minIdx]) {
-        minIdx = j;
-        explain(`New minimum found: ${arr[minIdx]} at index ${minIdx}`, 'comparing');
-      }
-      updateStats();
-    }
-    if (minIdx !== i) {
-      swaps++;
-      await pause([[i, 'swap'], [minIdx, 'swap']],
-        `Placing minimum ${arr[minIdx]} into position ${i} by swapping`, 'swapping');
-      [arr[i], arr[minIdx]] = [arr[minIdx], arr[i]];
-      updateStats();
-    }
-    bars[i] = 'sorted';
-    explain(`${arr[i]} placed correctly at position ${i} ✓`, 'sorted');
-    draw();
-  }
-  bars[arr.length - 1] = 'sorted';
-}
-
-async function insertionSort() {
-  const n = arr.length;
-  bars[0] = 'sorted';
-  for (let i = 1; i < n; i++) {
-    let key = arr[i], j = i - 1;
-    await pause([[i, 'compare']],
-      `Picking up ${key} from index ${i} — inserting it into the sorted left portion`, 'comparing');
-    while (j >= 0 && arr[j] > key) {
-      comps++;
-      arr[j + 1] = arr[j];
-      swaps++;
-      await pause([[j, 'swap'], [j + 1, 'swap']],
-        `${arr[j]} > ${key}  →  Shift ${arr[j]} one step right to make room`, 'swapping');
-      bars[j + 1] = 'normal';
-      j--;
-      updateStats();
-    }
-    arr[j + 1] = key;
-    bars[j + 1] = 'sorted';
-    explain(`${key} inserted at position ${j + 1} ✓`, 'sorted');
-    draw();
-  }
-  bars.fill('sorted');
-  draw();
-}
-
-async function mergeSort() {
-  explain('Merge Sort: recursively splitting array in half, then merging sorted halves back together', 'comparing');
-  await mergeSortHelper(0, arr.length - 1);
-  bars.fill('sorted');
-  pointers = {};
-  draw();
-}
-
-async function mergeSortHelper(l, r) {
-  if (l >= r) return;
-  const m = Math.floor((l + r) / 2);
-  explain(`Splitting: [${l}..${m}] and [${m + 1}..${r}]`, 'comparing');
-  await mergeSortHelper(l, m);
-  await mergeSortHelper(m + 1, r);
-  await mergeHalves(l, m, r);
-}
-
-async function mergeHalves(l, m, r) {
-  const left = arr.slice(l, m + 1), right = arr.slice(m + 1, r + 1);
-  let i = 0, j = 0, k = l;
-  while (i < left.length && j < right.length) {
-    comps++;
-    const lv = left[i], rv = right[j];
-    await pause([[k, 'compare']],
-      `Merging: left = ${lv}  vs  right = ${rv}  →  placing ${lv <= rv ? lv : rv}`, 'comparing');
-    if (lv <= rv) { arr[k++] = left[i++]; } else { arr[k++] = right[j++]; swaps++; }
-    updateStats();
-  }
-  while (i < left.length)  { arr[k++] = left[i++]; }
-  while (j < right.length) { arr[k++] = right[j++]; }
-  for (let x = l; x <= r; x++) bars[x] = 'swap';
-  explain(`Merged section [${l}..${r}] into sorted order`, 'swapping');
-  draw();
-  await sleep(getDelay());
-}
-
-async function quickSort() {
-  explain('Quick Sort: pick a pivot → move smaller elements left, larger right → recurse on each side', 'pivot');
-  await quickSortHelper(0, arr.length - 1);
-  bars.fill('sorted');
-  pointers = {};
-  draw();
-}
-
-async function quickSortHelper(low, high) {
-  if (low < high) {
-    const pi = await partition(low, high);
-    await quickSortHelper(low, pi - 1);
-    await quickSortHelper(pi + 1, high);
-  } else if (low === high) { bars[low] = 'sorted'; draw(); }
-}
-
-async function partition(low, high) {
-  const pivot = arr[high];
-  bars[high] = 'pivot';
-  explain(`Pivot = ${pivot} (last element in range). Scanning for elements smaller than ${pivot}`, 'pivot');
-  await pause([[high, 'pivot']], `Pivot selected: ${pivot}`, 'pivot');
-  bars[high] = 'pivot';
-  let i = low - 1;
-  for (let j = low; j < high; j++) {
-    comps++;
-    await pause([[j, 'compare'], [high, 'pivot']],
-      `arr[${j}] = ${arr[j]}  ${arr[j] < pivot ? '<' : '≥'}  pivot ${pivot}  →  ${arr[j] < pivot ? 'move left of pivot' : 'leave in place'}`,
-      'comparing');
-    bars[high] = 'pivot';
-    if (arr[j] < pivot) {
-      i++;
-      swaps++;
-      [arr[i], arr[j]] = [arr[j], arr[i]];
-      await pause([[i, 'swap'], [j, 'swap'], [high, 'pivot']],
-        `Swapping ${arr[j]} ↔ ${arr[i]}  →  smaller element moves left of pivot boundary`, 'swapping');
-      bars[high] = 'pivot';
-      updateStats();
-    }
-  }
-  [arr[i + 1], arr[high]] = [arr[high], arr[i + 1]];
-  swaps++;
-  bars[i + 1] = 'sorted';
-  bars[high]  = 'normal';
-  explain(`Pivot ${pivot} is now in its final sorted position at index ${i + 1} ✓`, 'sorted');
-  await pause([[i + 1, 'sorted']], '', 'sorted');
-  updateStats();
-  return i + 1;
-}
-
-async function heapSort() {
-  const n = arr.length;
-  explain('Heap Sort: building a max-heap so the largest element is always at root, then extracting one by one', 'comparing');
-  for (let i = Math.floor(n / 2) - 1; i >= 0; i--) await heapify(n, i);
-  for (let i = n - 1; i > 0; i--) {
-    swaps++;
-    explain(`Root ${arr[0]} is the max — placing it at its final position ${i}`, 'swapping');
-    [arr[0], arr[i]] = [arr[i], arr[0]];
-    await pause([[0, 'swap'], [i, 'swap']], `Swap root ${arr[i]} → position ${i}`, 'swapping');
-    bars[i] = 'sorted';
-    updateStats();
-    await heapify(i, 0);
-  }
-  bars[0] = 'sorted';
-  draw();
-}
-
-async function heapify(n, i) {
-  let largest = i, l = 2 * i + 1, r = 2 * i + 2;
-  if (l < n) { comps++; if (arr[l] > arr[largest]) largest = l; }
-  if (r < n) { comps++; if (arr[r] > arr[largest]) largest = r; }
-  if (largest !== i) {
-    swaps++;
-    explain(`Heapify: ${arr[i]} < child ${arr[largest]}  →  swap to restore heap property`, 'swapping');
-    [arr[i], arr[largest]] = [arr[largest], arr[i]];
-    await pause([[i, 'swap'], [largest, 'swap']], '', 'swapping');
-    updateStats();
-    await heapify(n, largest);
-  }
-}
-
-// ── Controls ──────────────────────────────────────────────────────────────────
-document.getElementById('algo-btns').addEventListener('click', e => {
-  const btn = e.target.closest('.algo-btn');
-  if (!btn || running) return;
-  document.querySelectorAll('.algo-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  algo = btn.dataset.algo;
-  const c = COMPLEXITIES[algo];
-  document.getElementById('c-best').textContent   = c.best;
-  document.getElementById('c-avg').textContent    = c.avg;
-  document.getElementById('c-worst').textContent  = c.worst;
-  document.getElementById('c-space').textContent  = c.space;
-  document.getElementById('c-stable').textContent = c.stable;
-  genArray();
-  log('Algorithm → ' + btn.textContent.trim());
-});
-
-document.getElementById('size').addEventListener('input', function () {
-  document.getElementById('size-val').textContent = this.value;
-  if (!running) genArray();
-});
-
-document.getElementById('speed').addEventListener('input', function () {
-  document.getElementById('speed-val').textContent = this.value;
-});
-
-document.getElementById('btn-reset').addEventListener('click', () => {
-  if (running) { stopped = true; return; }
-  genArray();
-});
-
-document.getElementById('btn-go').addEventListener('click', async () => {
-  if (running) return;
-  running = true; stopped = false;
-  comps = swaps = 0;
-  updateStats();
-  setStatus('Running…');
-  document.getElementById('btn-go').disabled = true;
-  log(`Starting ${algo} on ${arr.length} elements`);
-  startTimer();
-
-  try {
-    await { bubble: bubbleSort, selection: selectionSort, insertion: insertionSort, merge: mergeSort, quick: quickSort, heap: heapSort }[algo]();
-    stopTimer();
-    setStatus('Done ✓');
-    pointers = {};
-    explain('Sorting complete! Every element is in its correct position ✓', 'sorted');
-    log(`Done — ${comps} comparisons, ${swaps} swaps`);
-  } catch (e) {
-    stopTimer();
-    setStatus('Stopped');
-    explain('Stopped.', '');
-    log('Stopped by user');
-    bars.fill('normal');
-    pointers = {};
-    draw();
-  }
-
-  running = false;
-  document.getElementById('btn-go').disabled = false;
-});
-
-// ── Init ─────────────────────────────────────────────────────────────────────
-resizeCanvas();
-genArray();
-</script>
 </body>
 </html>
