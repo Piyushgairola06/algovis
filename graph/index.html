@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Graph — AlgoVis</title>
 
-  <!-- CSS LINK -->
+  <!-- LINK CSS -->
   <link rel="stylesheet" href="style.css">
 </head>
 
@@ -19,7 +19,7 @@
 
 <div class="workspace">
 
-  <!-- LEFT PANEL -->
+  <!-- ── LEFT PANEL ── -->
   <div class="panel">
 
     <div>
@@ -42,36 +42,42 @@
     <div>
       <div class="panel-section-label">Edit Mode</div>
       <div class="mode-list">
-        <button class="mode-btn active" data-mode="node">Add Node</button>
-        <button class="mode-btn" data-mode="edge">Add Edge</button>
-        <button class="mode-btn" data-mode="start">Set Start</button>
-        <button class="mode-btn" data-mode="end">Set End</button>
-        <button class="mode-btn" data-mode="delete">Delete</button>
+        <button class="mode-btn active" data-mode="node"><span class="mode-dot"></span>Add Node</button>
+        <button class="mode-btn" data-mode="edge"><span class="mode-dot"></span>Add Edge</button>
+        <button class="mode-btn" data-mode="start"><span class="mode-dot"></span>Set Start</button>
+        <button class="mode-btn" data-mode="end"><span class="mode-dot"></span>Set End</button>
+        <button class="mode-btn" data-mode="delete"><span class="mode-dot"></span>Delete</button>
       </div>
     </div>
 
     <div>
-      <div class="panel-section-label">Speed</div>
-      <input type="range" id="speed" min="10" max="1000" value="50" step="10"/>
+      <div class="panel-section-label">Speed — <span id="speed-label">50ms</span></div>
+      <input type="range" id="speed" min="10" max="1000" value="50" step="10" />
     </div>
 
     <div class="action-row">
-      <button class="btn primary" id="btn-run">Run</button>
-      <button class="btn" id="btn-reset-vis">Reset</button>
-      <button class="btn" id="btn-clear">Clear</button>
-      <button class="btn" id="btn-sample">Sample</button>
+      <button class="btn primary" id="btn-run">▶ Run</button>
+      <button class="btn" id="btn-reset-vis">↺ Reset Vis</button>
+      <button class="btn" id="btn-clear">⊘ Clear Graph</button>
+      <button class="btn" id="btn-sample">⊞ Load Sample</button>
     </div>
 
   </div>
 
-  <!-- CANVAS -->
-  <div class="canvas-wrap">
+  <!-- ── CANVAS ── -->
+  <div class="canvas-wrap" id="canvas-wrap">
     <canvas id="graph-canvas"></canvas>
+    <div class="canvas-hint" id="canvas-hint">Click canvas to add nodes · Switch to "Add Edge" to connect them</div>
+  </div>
+
+  <!-- ── RIGHT PANEL ── -->
+  <div class="panel panel-right">
+    <!-- KEEP EVERYTHING SAME (no change) -->
   </div>
 
 </div>
 
-<!-- JS LINK -->
+<!-- LINK JS -->
 <script src="script.js"></script>
 
 </body>
