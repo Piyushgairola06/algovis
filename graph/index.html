@@ -2,10 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Graph — AlgoVis</title>
-  <link rel="stylesheet" href="css/styles.css" />
+
+  <!-- CSS LINK -->
+  <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
 <header>
@@ -39,81 +42,37 @@
     <div>
       <div class="panel-section-label">Edit Mode</div>
       <div class="mode-list">
-        <button class="mode-btn active" data-mode="node"><span class="mode-dot"></span>Add Node</button>
-        <button class="mode-btn" data-mode="edge"><span class="mode-dot"></span>Add Edge</button>
-        <button class="mode-btn" data-mode="start"><span class="mode-dot" style="background:var(--col-start)"></span>Set Start</button>
-        <button class="mode-btn" data-mode="end"><span class="mode-dot" style="background:var(--col-end)"></span>Set End</button>
-        <button class="mode-btn" data-mode="delete"><span class="mode-dot" style="background:#ff6b6b"></span>Delete</button>
+        <button class="mode-btn active" data-mode="node">Add Node</button>
+        <button class="mode-btn" data-mode="edge">Add Edge</button>
+        <button class="mode-btn" data-mode="start">Set Start</button>
+        <button class="mode-btn" data-mode="end">Set End</button>
+        <button class="mode-btn" data-mode="delete">Delete</button>
       </div>
     </div>
 
     <div>
-      <div class="panel-section-label">Speed — <span id="speed-label">50ms</span></div>
-      <input type="range" id="speed" min="10" max="1000" value="50" step="10" />
-      <div class="speed-row"><span>fast</span><span>slow</span></div>
+      <div class="panel-section-label">Speed</div>
+      <input type="range" id="speed" min="10" max="1000" value="50" step="10"/>
     </div>
 
     <div class="action-row">
-      <button class="btn primary" id="btn-run">▶ Run</button>
-      <button class="btn" id="btn-reset-vis">↺ Reset Vis</button>
-      <button class="btn" id="btn-clear">⊘ Clear Graph</button>
-      <button class="btn" id="btn-sample">⊞ Load Sample</button>
+      <button class="btn primary" id="btn-run">Run</button>
+      <button class="btn" id="btn-reset-vis">Reset</button>
+      <button class="btn" id="btn-clear">Clear</button>
+      <button class="btn" id="btn-sample">Sample</button>
     </div>
 
   </div>
 
   <!-- CANVAS -->
-  <div class="canvas-wrap" id="canvas-wrap">
+  <div class="canvas-wrap">
     <canvas id="graph-canvas"></canvas>
-    <div class="canvas-hint" id="canvas-hint">Click canvas to add nodes · Switch to "Add Edge" to connect them</div>
   </div>
 
-  <!-- RIGHT PANEL -->
-  <div class="panel panel-right">
-
-    <div>
-      <div class="panel-section-label">Complexity</div>
-      <div class="complexity-grid" id="complexity-grid">
-        <span class="label">Time</span><span class="val" id="cx-time">O(V+E)</span>
-        <span class="label">Space</span><span class="val" id="cx-space">O(V)</span>
-        <span class="label">Complete</span><span class="val" id="cx-complete">Yes</span>
-        <span class="label">Optimal</span><span class="val" id="cx-optimal">No</span>
-      </div>
-    </div>
-
-    <div>
-      <div class="panel-section-label">Legend</div>
-      <div class="legend-list">
-        <div class="legend-item"><div class="legend-dot" style="background:#333;border:1px solid #555"></div>Unvisited</div>
-        <div class="legend-item"><div class="legend-dot" style="background:var(--col-start)"></div>Start</div>
-        <div class="legend-item"><div class="legend-dot" style="background:var(--col-end)"></div>End</div>
-        <div class="legend-item"><div class="legend-dot" style="background:var(--col-frontier)"></div>Frontier / Queue</div>
-        <div class="legend-item"><div class="legend-dot" style="background:var(--col-visited)"></div>Visited</div>
-        <div class="legend-item"><div class="legend-dot" style="background:var(--col-path)"></div>Shortest Path</div>
-      </div>
-    </div>
-
-    <div>
-      <div class="panel-section-label">Stats</div>
-      <div class="stats-list">
-        <div class="stat-row"><span class="stat-label">Nodes visited</span><span class="stat-val" id="stat-visited">0</span></div>
-        <div class="stat-row"><span class="stat-label">Path length</span><span class="stat-val" id="stat-path">—</span></div>
-        <div class="stat-row"><span class="stat-label">Path cost</span><span class="stat-val" id="stat-cost">—</span></div>
-        <div class="stat-row"><span class="stat-label">Time</span><span class="stat-val" id="stat-time">0ms</span></div>
-        <div class="stat-row"><span class="stat-label">Status</span><span class="stat-val" id="stat-status">Ready</span></div>
-      </div>
-    </div>
-
-    <div style="flex:1;display:flex;flex-direction:column;min-height:0">
-      <div class="panel-section-label">Log</div>
-      <div class="log-box" id="log-box">
-        <p>> Ready. Load a sample or build your own graph.</p>
-      </div>
-    </div>
-
-  </div>
 </div>
 
-<script type="module" src="js/main.js"></script>
+<!-- JS LINK -->
+<script src="script.js"></script>
+
 </body>
 </html>
